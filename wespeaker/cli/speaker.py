@@ -62,6 +62,8 @@ class Speaker:
         self.diar_frame_shift = 10
         self.diar_batch_size = 32
         self.diar_subseg_cmn = True
+        self.diar_threshold=0.5
+        self.diar_speech_pad_ms=30
 
     def set_wavform_norm(self, wavform_norm: bool):
         self.wavform_norm = wavform_norm
@@ -218,7 +220,7 @@ class Speaker:
         pcm, sample_rate = torchaudio.load(audio_path, normalize=False)
         # 1. vad
         wav = read_audio(audio_path)
-        vad_segments = get_speech_timestamps(wav, self.vad, return_seconds=True)
+        vad_segments = get_speech_timestamps(wav, self.vad, return_seconds=True, threshold=self.diar_threshold, speech_pad_ms=self.diar_speech_pad_ms)
 
         # 2. extact fbanks
         subsegs, subseg_fbanks = [], []
